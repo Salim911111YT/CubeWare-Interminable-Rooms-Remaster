@@ -1,7 +1,25 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/magbux/BorealisUiLib/refs/heads/main/Library.Lua"))()
 local Alurt = loadstring(game:HttpGet("https://raw.githubusercontent.com/azir-py/project/refs/heads/main/Zwolf/AlurtUI.lua"))()
 
-local plr = game:GetService("Players").LocalPlayer
+local plr : Player = nil
+local bad_executor = false
+
+if cloneref then
+	plr = cloneref(game:GetService("Players")).LocalPlayer
+else
+	plr = game:GetService("Players").LocalPlayer
+
+	if bad_executor == false then
+		bad_executor = true
+		Alurt.CreateNode({
+			Name = "CubeWare",
+			Content = "Due to your executor NOT supporting some function (cloneref, firetouchtransmitter, etc...), you won't have access to much modules."
+			Length = 20,
+			Image = "rbxassetid://0",
+			BarColor = Color3.fromRGB(75, 75, 75)
+		})
+	end
+end
 
 local connections = {
 	["EntityESP"] = nil
