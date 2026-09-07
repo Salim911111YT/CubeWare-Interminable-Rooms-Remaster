@@ -30,9 +30,7 @@ local connections = {
     ["LightingChanged"] = nil
 }
 
-local lightning_proprities = {
-
-}
+local lightning_proprities = {}
 
 -- Create A Window (Put The Tab Name Behind The Section Name)
 local Window = Library.new("CubeWare | Interminable Rooms REWRITE")
