@@ -13,7 +13,7 @@ else
 		bad_executor = true
 		Alurt.CreateNode({
 			Name = "CubeWare",
-			Content = "Due to your executor NOT supporting some function (attempt to 'clonerf'), you won't have access to much modules."
+			Content = "Due to your executor NOT supporting some function (attempt to 'clonerf'), you won't have access to much modules.",
 			Length = 20,
 			Image = "rbxassetid://0",
 			BarColor = Color3.fromRGB(75, 75, 75)
@@ -25,7 +25,13 @@ local connections = {
 	["EntityESP"] = {
 		["1"] = nil,
 		["2"] = nil
-	}
+	},
+
+    ["LightingChanged"] = nil
+}
+
+local lightning_proprities = {
+
 }
 
 -- Create A Window (Put The Tab Name Behind The Section Name)
@@ -46,7 +52,7 @@ end)
 
 local world = Window:MakeTab("Main");
 
-world:CreateToggle({
+world:AddToggle({
     Name = "Entity Notifier",
     Callback = function(value)
 		if value then
@@ -80,37 +86,35 @@ world:CreateToggle({
     end
 })
 
-if hookmetamethod then
-	world:AddButton({
-		Name = "Client Anti-Kick",
-		Callback = function()
-			if hookmetamethod then
-				hookmetamethod(game, "__namecall", function(self, ...)
-    				local methode = getnamecallmethod()
-    				local args = ...
+world:AddToggle({
+    Name = "Set to Day",
+    Callback = function(value)
+        if value == true then
+            lightning_proprities["Clock"] = game:GetService("Lighting").ClockTime
+            lightning_proprities["Bright"] = game:GetService("Lighting").Brightness
+            lightning_proprities["EC"] = game:GetService("Lighting").ExposureCompensation
 
-    				if string.lower(methode) == "kick" then
-        				pcall(function()
-							Alurt.CreateNode({
-								Title = "Anti Kick",
-								Content = "Dodged Client Sided Kick with message: "..tostring(unpack(args)),
-								Audio = "rbxassetid://0",
-								Length = 10,
-								Image = "rbxassetid://0",
-								BarColor = Color3.fromRGB(75, 75, 75)
-							})
-						end)
-						
-       					return
-   					end
-				end)
-			else
-				warn("Doesn't support 'hookmetamethod'")
-			end
-		end,
-	})
-end
-    
+            game:GetService("Lighting").ClockTime = 14
+
+            connections["LightingChanged"] = game:GetService("Lighting").Changed:Connect(function()
+                task.wait()
+                game:GetService("Lighting").ClockTime = 14
+                game:GetService("Lighting").Brightness = 3
+                game:GetService("Lighting").ExposureCompensation = 1
+            end)
+        else
+            if connections["LightingChanged"] then
+                connections["LightingChanged"]:Disconnect()
+                connections["LightingChanged"] = nil
+            end
+
+            game:GetService("Lighting").ClockTime = lightning_proprities["Clock"]
+            game:GetService("Lighting").Brightness = lightning_proprities["Bright"]
+             game:GetService("Lighting").Brightness = lightning_proprities["EC"]
+        end
+    end
+})
+  
 task.spawn(function()
 	pcall(function()
 		local notif1 = Alurt.CreateNode({
